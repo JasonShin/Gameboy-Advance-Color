@@ -1,0 +1,7 @@
+1. writeIODispatch32 - normal
+2. writeIODispatch32  - normal
+								268435
+3. writeVRAM16   - update spill	258384
+		handle CPU -> executeIteration -> incrementProgramCounter -> handle cpu -> STRHimm5
+		
+4. writeVRAM16 - update spill  - cycles to iterate 258364
