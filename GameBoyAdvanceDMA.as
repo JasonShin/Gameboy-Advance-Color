@@ -96,7 +96,7 @@
 			this.currentMatch = -1;
 			this.lastCurrentMatch = -1;
 	
-			//this.memoryAccessCache = new GameBoyAdvanceMemoryCache(this.memory);
+			this.memoryAccessCache = new GameBoyAdvanceMemoryCache(this.memory);
 		}
 		public function writeDMASource(dmaChannel, byteNumber, data) {
 			this.source[dmaChannel] &= ~(0xFF << (byteNumber << 3));
@@ -263,16 +263,21 @@
 			//Load in the control register:
 			var control = this.controlShadow[dmaChannel];
 			//Transfer Data:
+
 			if (control[2]) {
 				//32-bit Transfer:
+	
 				this.memoryAccessCache.memoryWrite32(destination >>> 0, this.memoryAccessCache.memoryRead32(source >>> 0) | 0);
+
 				this.decrementWordCount(control, dmaChannel | 0, source | 0, destination | 0, 4);
+
 			}
 			else {
 				//16-bit Transfer:
 				this.memoryAccessCache.memoryWrite16(destination >>> 0, this.memoryAccessCache.memoryRead16(source >>> 0) | 0);
 				this.decrementWordCount(control, dmaChannel | 0, source | 0, destination | 0, 2);
 			}
+			
 		}
 		public function decrementWordCount(control, dmaChannel, source, destination, transferred) {
 			var wordCountShadow = (this.wordCountShadow[dmaChannel] - 1) & ((dmaChannel < 3) ? 0x3FFF : 0xFFFF);

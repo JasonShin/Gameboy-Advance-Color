@@ -1,15 +1,16 @@
 ﻿package  {
 	import utils.Logger;
 	import utils.ArrayHelper;
+	import flash.utils.ByteArray;
 	
 	public class GameBoyAdvanceMemory {
 		
 		public var IOCore;
 		public var emulatorCore;
 		//Load the BIOS:
-		public var BIOS;
-		public var BIOS16;
-		public var BIOS32;
+		public var BIOS:ByteArray;
+		//public var BIOS16;
+		//public var BIOS32;
 		
 		public var externalRAM;
 		public var externalRAM16;
@@ -17,9 +18,9 @@
 		public var internalRAM;
 		public var internalRAM16;
 		public var internalRAM32;
-		public var lastBIOSREAD;
-		public var lastBIOSREAD16;
-		public var lastBIOSREAD32;
+		public var lastBIOSREAD:ByteArray;
+		//public var lastBIOSREAD16;
+		//public var lastBIOSREAD32;
 		
 		public var dma;
 		public var gfx;
@@ -48,7 +49,9 @@
 			this.IOCore = IOCore;
 			this.emulatorCore = this.IOCore.emulatorCore;
 			//Load the BIOS:
-			this.BIOS = ArrayHelper.buildArray(0x4000);
+			//this.BIOS = ArrayHelper.buildArray(0x4000);
+			this.BIOS = new ByteArray();
+			this.BIOS.length = 0x4000;
 			//this.BIOS16 = ArrayHelper.buildArray(this.BIOS);
 			//this.BIOS32 = ArrayHelper.buildArray(this.BIOS);
 			this.loadBIOS();
@@ -59,7 +62,8 @@
 			this.internalRAM = ArrayHelper.buildArray(0x8000);
 			//this.internalRAM16 = ArrayHelper.buildArray(this.internalRAM);
 			//this.internalRAM32 = ArrayHelper.buildArray(this.internalRAM);
-			this.lastBIOSREAD = ArrayHelper.buildArray(0x4);		//BIOS read bus last.
+			this.lastBIOSREAD = new ByteArray();		//BIOS read bus last. ArrayHelper.buildArray(0x4)
+			lastBIOSREAD.length = 0x4;
 			//this.lastBIOSREAD16 = ArrayHelper.buildArray(this.lastBIOSREAD);
 			//this.lastBIOSREAD32 = ArrayHelper.buildArray(this.lastBIOSREAD);
 			//After all sub-objects initialized, initialize dispatches:
@@ -2685,12 +2689,18 @@
 				address >>= 1;
 				if (parentObj.cpu.registers[15] < 0x4000) {
 					//If reading from BIOS while executing it:
-					parentObj.lastBIOSREAD16[address & 0x1] = (parentObj.cpu.registers[15] >> ((address & 0x1) << 16)) & 0xFFFF;
-					return parentObj.BIOS16[address & 0x1FFF] | 0;
+					parentObj.lastBIOSREAD.position = address & 0x1;
+					//parentObj.lastBIOSREAD16[address & 0x1] = (parentObj.cpu.registers[15] >> ((address & 0x1) << 16)) & 0xFFFF;
+					parentObj.lastBIOSREAD.writeShort((parentObj.cpu.registers[15] >> ((address & 0x1) << 16)) & 0xFFFF);
+					//return parentObj.BIOS16[address & 0x1FFF] | 0;
+					parentObj.BIOS.position = address & 0x1FFF;
+					return parentObj.BIOS.readShort();
 				}
 				else {
 					//Not allowed to read from BIOS while executing outside of it:
-					return parentObj.lastBIOSREAD16[address & 0x1] | 0;
+					//return parentObj.lastBIOSREAD16[address & 0x1] | 0;
+					parentObj.lastBIOSREAD.position = address & 0x1;
+					return parentObj.lastBIOSREAD.readShort() | 0;
 				}
 			}
 			else {
@@ -2725,12 +2735,19 @@
 				address >>= 2;
 				if (parentObj.cpu.registers[15] < 0x4000) {
 					//If reading from BIOS while executing it:
-					parentObj.lastBIOSREAD32[0] = parentObj.cpu.registers[15] | 0;
-					return parentObj.BIOS32[address & 0xFFF] | 0;
+					//parentObj.lastBIOSREAD32[0] = parentObj.cpu.registers[15] | 0;
+					//return parentObj.BIOS32[address & 0xFFF] | 0;
+					parentObj.lastBIOSREAD.position = 0;
+					parentObj.lastBIOSREAD.writeInt(parentObj.cpu.registers[15] | 0);
+					parentObj.lastBIOSREAD.position = address & 0xFFF;
+					return parentObj.lastBIOSREAD.readInt() | 0;
+					
 				}
 				else {
 					//Not allowed to read from BIOS while executing outside of it:
-					return parentObj.lastBIOSREAD32[0] | 0;
+					parentObj.lastBIOSREAD.position = 0;
+					return parentObj.lastBIOSREAD.readInt() | 0;
+					//return parentObj.lastBIOSREAD32[0] | 0;
 				}
 			}
 			else {

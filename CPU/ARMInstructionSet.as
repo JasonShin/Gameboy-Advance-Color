@@ -350,7 +350,8 @@
 				parentObj.CPUCore.branch(address & -2);
 			}
 		}
-		public function B(parentObj, operand2OP) {
+		
+		public function B(parentObj, operand2OP = null) {
 			//Branch:
 			Logger.logARM("execute B");
 			parentObj.CPUCore.branch(((parentObj.readRegister(0xF) | 0) + ((parentObj.execute << 8) >> 6)) | 0);
@@ -713,7 +714,7 @@
 			parentObj.guardRegisterWrite((parentObj.execute >> 16) & 0xF, parentObj.CPUCore.mul64ResultHigh | 0);
 			parentObj.guardRegisterWrite((parentObj.execute >> 12) & 0xF, parentObj.CPUCore.mul64ResultLow | 0);
 		}
-		public function STRH(parentObj, operand2OP) {
+		public function STRH(parentObj, operand2OP = null) {
 			Logger.logARM("execute STRH");
 			//Perform halfword store calculations:
 			var address = operand2OP(parentObj, parentObj.execute | 0, false) | 0;
@@ -1549,7 +1550,8 @@
 			var shifter = (operand >> 7) & 0x1E;
 			if (shifter > 0) {
 				immediate = (immediate << (0x20 - shifter)) | (immediate >>> shifter);
-				parentObj.CPSRCarry = (immediate < 0);
+				//trace("Check here again");
+				//parentObj.CPUCore.CPSRCarry = (immediate < 0);
 			}
 			return immediate | 0;
 		}
@@ -1729,7 +1731,7 @@
 			var offset = parentObj.readRegister(operand & 0xF) | 0;
 			return parentObj.updateBasePreIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function ofip(parentObj, operand) {
+		public function ofip(parentObj, operand, fake = null) {
 			operand = operand | 0;
 			var offset = ((operand & 0xF00) >> 4) | (operand & 0xF);
 			return parentObj.updateNoBaseIncrement(operand | 0, offset | 0) | 0;
