@@ -581,7 +581,6 @@
 		}
 		public function audioJIT() {
 			//Audio Sample Generation Timing:
-			trace("hey");			
 			this.generateAudio(this.audioTicks | 0);
 			this.audioTicks = 0;
 		}

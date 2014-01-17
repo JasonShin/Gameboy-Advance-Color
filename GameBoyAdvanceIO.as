@@ -60,7 +60,7 @@
 		
 		public function iterate() {
 			//Find out how many clocks to iterate through this run:
-			trace("iterating");
+
 			this.cyclesToIterate = ((this.emulatorCore.CPUCyclesTotal | 0) - (this.cyclesIteratedPreviously | 0)) | 0;
 			//Update our core event prediction:
 			this.updateCoreEventTime();

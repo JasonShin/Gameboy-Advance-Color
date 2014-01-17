@@ -237,7 +237,6 @@
 			clocks = clocks | 0;
 			//Call this when clocking the state some more:
 			this.LCDTicks = ((this.LCDTicks | 0) + (clocks | 0)) | 0;
-			trace("LCDTicks: " + this.LCDTicks);
 			this.clockLCDState();
 		}
 		public function clockLCDState() {

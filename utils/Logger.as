@@ -5,8 +5,8 @@
 
 		public static var arm = false;
 		public static var thumb = false;
-		public static var loggable = true;
-		public static var memory = true;
+		public static var loggable = false;
+		public static var memory = false;
 		private static var accumLog:String = "";
 
 		public function Logger() {

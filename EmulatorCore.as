@@ -7,8 +7,9 @@
 	import utils.ArrayHelper;
 	import flash.utils.ByteArray;
 	import flash.geom.Rectangle;
+	import flash.display.MovieClip;
 	
-	public class EmulatorCore {
+	public class EmulatorCore extends MovieClip{
 			
 		public var SKIPBoot:Boolean;
 		public var dynarecEnabled:Boolean;
@@ -47,10 +48,10 @@
 		//Peripherals
 		public var IOCore;
 		public var ROM;
+		public var fr:LocalLoader;
 		
 		//Canvas data
 		public var canvas:GameBoyAdvanceCanvas;
-		public var canvasBuffer;
 		
 		public var canvasLastWidth;
 		public var canvasLastHeight;
@@ -58,8 +59,8 @@
 		public var onscreenWidth;
 		public var onscreenHeight;
 		
-		public var bitmapBuffer:ByteArray;
-		public var bitmapRect:Rectangle;
+		
+		
 		
 		public function EmulatorCore() {
 			// constructor code
@@ -96,33 +97,46 @@
 			this.calculateTimings();
 			
 		}
-
 		
-		public function play():void {
+		//First to be called after constructor
+		public function init(){
+			this.canvas = new GameBoyAdvanceCanvas(offscreenWidth, offscreenHeight);
+			addChild(this.canvas);
+			fr = new LocalLoader();
+			fr.loadROM(romLoadComplete);
+		}
+		
+		public function romLoadComplete(dat:ByteArray){
+			attachCanvas();
+			attachROM(dat);
+			startTimer();
+		}
+		
+		public function playEmulator():void {
 			if (this.paused) {
 				this.startTimer();
 				this.paused = false;
 			}
 		}
-		public function pause():void {
+		public function pauseEmulator():void {
 			if (!this.paused) {
 				this.clearTimer();
 				this.save();
 				this.paused = true;
 			}
 		}
-		public function stop():void {
+		public function stopEmulator():void {
 			this.faultFound = false;
 			this.romFound = false;
-			this.pause();
+			this.pauseEmulator();
 		}
 		public function statusClear():void {
 			this.faultFound = false;
-			this.pause();
+			this.pauseEmulator();
 		}
 		public function restart():void {
 			this.faultFound = false;
-			this.save();
+			this.pauseEmulator();
 			this.initializeCore();
 			this.resetMetrics();
 			this.reinitializeAudio();
@@ -140,26 +154,20 @@
 			this.clearTimer();
 			var parentObj = this;
 
-			mainTimer = new Timer(this.timerIntervalRate, 2);
+			mainTimer = new Timer(this.timerIntervalRate);
 			mainTimer.start();
 			mainTimer.addEventListener(TimerEvent.TIMER, this.timerCallback);
-
-			//this.timer = setInterval(function (){parentObj.timerCallback()}, this.timerIntervalRate);
 		}
 		public function timerCallback(event:TimerEvent):void {
 			//Check to see if web view is not hidden, if hidden don't run due to JS timers being inaccurate on page hide:
-			//if (!document.hidden && !document.msHidden && !document.mozHidden && !document.webkitHidden) {
 			if (!this.faultFound && this.romFound) {						//Any error pending or no ROM loaded is a show-stopper!
-				//trace("iterated!");
 				this.iterationStartSequence();								//Run start of iteration stuff.
 				this.IOCore.iterate();										//Step through the emulation core loop.
 				this.iterationEndSequence();								//Run end of iteration stuff.
 			}
 			else {
-				trace("paused!");
-				this.pause();												//Some pending error is preventing execution, so pause.
+				this.pauseEmulator();												//Some pending error is preventing execution, so pause.
 			}
-			//}
 		}
 		
 		public function iterationStartSequence():void {
@@ -227,20 +235,19 @@
 				this.IOCore.joypad.keyRelease(keyReleased);
 			}
 		}
-		public function attachCanvas(canvas:GameBoyAdvanceCanvas):void {
-			this.canvas = canvas;
+		public function attachCanvas():void {
 			
 			this.graphicsFound = true;
 			this.initializeCanvasTarget();
 		}
 		public function recomputeDimension():void {
 			//Cache some dimension info:
-			this.canvasLastWidth = this.canvas.canvasWidth;
+			/*this.canvasLastWidth = this.canvas.canvasWidth;
 			this.canvasLastHeight = this.canvas.canvasHeight;
 			
 			//Set target canvas as scaled:
 			this.onscreenWidth = this.canvas.canvasWidth;
-			this.onscreenHeight = this.canvas.canvasHeight;
+			this.onscreenHeight = this.canvas.canvasHeight;*/
 			
 		}
 		public function initializeCanvasTarget() {
@@ -248,16 +255,24 @@
 			//Obtain dimensional information:
 			this.recomputeDimension();
 			//Initialising buffer 
+			
 			//this.canvasBuffer = new ByteArray();
 			
 			
 			//Get handles on the canvases:
 			//this.canvasOffscreen.width = this.offscreenWidth;
 			//this.canvasOffscreen.height = this.offscreenHeight;
-			for (var indexGFXIterate = 3; indexGFXIterate < this.offscreenRGBACount; indexGFXIterate += 4) {
+			/*for (var indexGFXIterate = 3; indexGFXIterate < this.offscreenRGBACount; indexGFXIterate += 4) {
 				canvasBuffer[indexGFXIterate] = 0xFF;
 				//this.canvasBuffer.data[indexGFXIterate] = 0xFF;
-			}
+			}*/
+			
+			/*for(var indexGFXIterate = 0; indexGFXIterate < this.offscreenRGBACount;){
+				this.canvas.setSeg(indexGFXIterate,255);	//a
+				this.canvas.setSeg(indexGFXIterate++, 0xFF);	//r
+				this.canvas.setSeg(indexGFXIterate++, 0xFF);	//g
+				this.canvas.setSeg(indexGFXIterate++, 0xFF);	//b
+			}*/
 			//Initialize Alpha Channel:
 			/*for (var indexGFXIterate = 3; indexGFXIterate < this.offscreenRGBACount; indexGFXIterate += 4) {
 				this.canvasBuffer.data[indexGFXIterate] = 0xFF;
@@ -281,6 +296,7 @@
 				this.swizzledFrame[canvasIndex++] = (this.frameBuffer[bufferIndex] & 0x3E0) >> 2;			//Green
 				this.swizzledFrame[canvasIndex++] = (this.frameBuffer[bufferIndex++] & 0x7C00) >> 7;		//Blue
 			}
+			
 		}
 		
 		public function prepareFrame():void {
@@ -288,48 +304,30 @@
 			this.swizzleFrameBuffer();
 			this.drewFrame = true;
 		}
+		
+		public var zero = 0;
+		public var undef = 0;
+		
 		public function requestDraw():void {
-			//trace("requesting to draw!  "  + (this.drewFrame && this.graphicsFound) );
-			//trace("request: " + this.drewFrame);
 			if(this.drewFrame){
-			//if (this.drewFrame && this.graphicsFound) {
-				//We actually updated the graphics internally, so copy out:
-				//var canvasData = this.canvasBuffer.data;
 				var bufferIndex = 0;
-				for (var canvasIndex = 0; canvasIndex < this.offscreenRGBACount; ++canvasIndex) {
-					//canvasData[canvasIndex++] = this.swizzledFrame[bufferIndex++];
-					//canvasData[canvasIndex++] = this.swizzledFrame[bufferIndex++];
-					//canvasData[canvasIndex++] = this.swizzledFrame[bufferIndex++];
-					var r =  this.swizzledFrame[bufferIndex++];
-					var g =  this.swizzledFrame[bufferIndex++];
+				for (var canvasIndex = 0; canvasIndex < this.offscreenRGBACount;) {
+					var r = this.swizzledFrame[bufferIndex++];
+					var g = this.swizzledFrame[bufferIndex++];
 					var b = this.swizzledFrame[bufferIndex++];
-					canvasIndex++;
-					canvasIndex++;
-					canvasIndex++;
-					
-					
-					if( (r != 0 && r != undefined || g != 0 && g != undefined || b != 0 && b != undefined) ){
-						//trace("drew 0: " + a + "  1: " + b + "  2: " + c);
-					}
+					canvas.setSeg(canvasIndex++, 255);
+					canvas.setSeg(canvasIndex++, r);
+					canvas.setSeg(canvasIndex++, g);
+					canvas.setSeg(canvasIndex++, b);
 					
 				}
+				
 				this.graphicsBlit();
 			}
 		}
 		public function graphicsBlit():void {
-			/*if (this.canvasLastWidth != this.canvas.clientWidth || this.canvasLastHeight != this.canvas.clientHeight) {
-				this.recomputeDimension();
-			}
-			if (this.offscreenWidth == this.onscreenWidth && this.offscreenHeight == this.onscreenHeight) {
-				//Canvas does not need to scale, draw directly to final:
-				this.drawContextOnscreen.putImageData(this.canvasBuffer, 0, 0);
-			}
-			else {
-				//Canvas needs to scale, draw to offscreen first:
-				this.drawContextOffscreen.putImageData(this.canvasBuffer, 0, 0);
-				//Scale offscreen canvas image onto the final:
-				this.drawContextOnscreen.drawImage(this.canvasOffscreen, 0, 0, this.onscreenWidth, this.onscreenHeight);
-			}*/
+			this.canvas.refresh();
+			
 		}
 		public function enableAudio():void {
 			/*if (!this.audioFound) {
