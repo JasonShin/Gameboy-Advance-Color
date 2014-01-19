@@ -27,10 +27,11 @@
 		  return functionName;
 		}
 
-		
+	
 		public static function logARM(msg){
-			if(arm)
+			if(arm){
 				log(msg);
+			}
 		}
 		
 		public static function logTHUMB(msg) {

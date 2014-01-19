@@ -2,7 +2,6 @@
 	import flash.display.Stage;
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
-	import graphics.GameBoyAdvanceCanvas;
 	import FileLoader.LocalLoader;
 	import utils.ArrayHelper;
 	import flash.utils.ByteArray;
@@ -161,9 +160,15 @@
 		public function timerCallback(event:TimerEvent):void {
 			//Check to see if web view is not hidden, if hidden don't run due to JS timers being inaccurate on page hide:
 			if (!this.faultFound && this.romFound) {						//Any error pending or no ROM loaded is a show-stopper!
+				
 				this.iterationStartSequence();								//Run start of iteration stuff.
+				
+				
 				this.IOCore.iterate();										//Step through the emulation core loop.
-				this.iterationEndSequence();								//Run end of iteration stuff.
+
+				this.iterationEndSequence();								//Run end of iteration stuff. Including rendering the frame
+				
+				
 			}
 			else {
 				this.pauseEmulator();												//Some pending error is preventing execution, so pause.
@@ -309,6 +314,7 @@
 		public var undef = 0;
 		
 		public function requestDraw():void {
+		
 			if(this.drewFrame){
 				var bufferIndex = 0;
 				for (var canvasIndex = 0; canvasIndex < this.offscreenRGBACount;) {
@@ -324,8 +330,10 @@
 				
 				this.graphicsBlit();
 			}
+			
 		}
 		public function graphicsBlit():void {
+			
 			this.canvas.refresh();
 			
 		}

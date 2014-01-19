@@ -5,3 +5,25 @@
 		handle CPU -> executeIteration -> incrementProgramCounter -> handle cpu -> STRHimm5
 		
 4. writeVRAM16 - update spill  - cycles to iterate 258364
+
+
+-- Graphics duration
+
+Drawing time = 15~18
+
+IOCore.iterate = 100~150
+	IOCore updateCoreEventTime -> 0~3
+	
+	RunIterator -> 100~250   (while loops many times)
+		handleCPU -> 0~3 (CHECK AGAIN)
+		handleDMA -> 0~25
+		handleHalt -> 0~50
+		
+		
+	updateCoreClocking -> 0
+	audioJit -> 0~3
+	
+	
+GRAPHICS
+	addClock
+	1~70

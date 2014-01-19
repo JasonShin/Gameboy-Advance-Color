@@ -63,35 +63,40 @@
 
 			this.cyclesToIterate = ((this.emulatorCore.CPUCyclesTotal | 0) - (this.cyclesIteratedPreviously | 0)) | 0;
 			//Update our core event prediction:
+			
+				
 			this.updateCoreEventTime();
+			
 			//If clocks remaining, run iterator:
+			
 			this.runIterator();
+			
 			//Spill our core event clocking:
+			
 			this.updateCoreClocking();
+			
 			//Ensure audio buffers at least once per iteration:
+			
 			this.sound.audioJIT();
+			
 			//If we clocked just a little too much, subtract the extra from the next run:
 			this.cyclesIteratedPreviously = this.cyclesToIterate | 0;
 		}
 		
-		public var numCount:uint = 0;
-		public var stopO:Boolean = true;
-		
 		public function runIterator() {
 			//Clock through the state machine:
+			
 			while ((this.cyclesToIterate | 0) > 0) {
 				//Handle the current system state selected:
-				if(stopO){
-					numCount++;
-				}
 				this.stepHandle();
-				
 			}
+			
 		}
 		
 		
 		
 		public function updateCore(clocks) {
+			
 			clocks = clocks | 0;
 			//This is used during normal/dma modes of operation:
 			this.accumulatedClocks = ((this.accumulatedClocks | 0) + (clocks | 0)) | 0;
@@ -99,6 +104,7 @@
 			if ((this.accumulatedClocks | 0) >= (this.nextEventClocks | 0)) {
 				this.updateCoreSpill();
 			}
+			
 		}
 		public function updateCoreSpill() {
 			this.updateCoreClocking();
@@ -109,7 +115,9 @@
 			//Decrement the clocks per iteration counter:
 			this.cyclesToIterate = ((this.cyclesToIterate | 0) - (clocks | 0)) | 0;
 			//Clock all components:
+			
 			this.gfx.addClocks(clocks | 0);
+			
 			this.timer.addClocks(clocks | 0);
 			this.serial.addClocks(clocks | 0);
 			this.accumulatedClocks = 0;
@@ -140,6 +148,8 @@
 		}
 		public function handleCPU() {
 			//Execute next instruction:
+			
+			
 			if (!this.executeDynarec) {
 				//Interpreter:
 				this.cpu.executeIteration();
@@ -148,14 +158,21 @@
 				//LLE Dynarec JIT
 				this.executeDynarec = !!this.cpu.dynarec.enter();
 			}
+			
+			
 		}
 		public function handleDMA() {
+			
+			
 			if (this.dma.perform()) {
 				//If DMA is done, exit it:
 				this.deflagStepper(0x1);
 			}
+
+			
 		}
 		public function handleHalt() {
+			
 			if (!this.irq.IRQMatch()) {
 				//Clock up to next IRQ match or DMA:
 				this.updateCore(this.cyclesUntilNextEvent() | 0);
@@ -164,12 +181,15 @@
 				//Exit HALT promptly:
 				this.deflagStepper(0x2);
 			}
+			
 		}
 		public function handleStop() {
+
 			//Update sound system to add silence to buffer:
 			this.sound.addClocks(this.cyclesToIterate | 0);
 			this.cyclesToIterate = 0;
 			//Exits when user presses joypad or from an external irq outside of GBA internal.
+			
 		}
 		public function cyclesUntilNextEvent() {
 			//Find the clocks to the next event:

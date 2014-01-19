@@ -40,23 +40,30 @@
 		
 		public function executeIteration() {
 			//Push the new fetch access:
+			
 			this.fetch = this.wait.CPUGetOpcode32(this.registers[15]);
+			
 			//Execute Conditional Instruction:
+			
 			this.executeARM();
+			
 			//Update the pipelining state:
 			this.execute = this.decode | 0;
 			this.decode = this.fetch | 0;
 		}
 		public function executeARM() {
 			//Don't execute if the pipeline is still invalid:
+			
 			if ((this.CPUCore.pipelineInvalid | 0) == 0) {
 				//Check the condition code:
 				if (this.conditionCodeTest()) {
 					var inst:Function = this.instructionMapReduced[((this.execute >> 16) & 0xFF0) | ((this.execute >> 4) & 0xF)];
 					inst();
+					
 				}
 			}
 		}
+		
 		public function incrementProgramCounter() {
 			//Increment The Program Counter:
 			this.registers[15] = ((this.registers[15] | 0) + 4) | 0;

@@ -242,7 +242,12 @@
 		public function clockLCDState() {
 			if ((this.LCDTicks | 0) >= 1006) {
 				//HBlank Event Occurred:
+				var st = (new Date()).milliseconds;
 				this.updateHBlank();
+				var ed = (new Date()).milliseconds;
+				if((ed - st) > 0){
+					trace("Duration went over 0 " + (ed - st));
+				}
 				if ((this.LCDTicks | 0) >= 1232) {
 					/*We've now overflowed the LCD scan line state machine counter,
 					 which tells us we need to be on a new scan-line and refresh over.*/

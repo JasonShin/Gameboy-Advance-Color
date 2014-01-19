@@ -239,6 +239,7 @@
 			}
 		}
 		public function perform() {
+					
 			//Solve for the highest priority DMA to process:
 			for (var dmaPriority = 0; dmaPriority < 4; ++dmaPriority) {
 				this.currentMatch = this.enabled[dmaPriority] & this.pending[dmaPriority];
@@ -254,6 +255,8 @@
 			}
 			//If no DMA was processed, then the DMA period has ended:
 			this.lastCurrentMatch = -1;
+			
+			
 			return true;
 		}
 		public function handleDMACopy(dmaChannel) {
