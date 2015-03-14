@@ -56,7 +56,9 @@
 		public function setPixels(buf:ByteArray){
 			
 			buf.position = 0;
+			bmData.lock();
 			bmData.setPixels(rect, buf);
+			bmData.unlock();
 			this.bitmapData = bmData;
 		}
 		

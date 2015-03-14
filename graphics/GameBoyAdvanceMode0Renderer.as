@@ -10,6 +10,7 @@
 		}
 		
 		public function renderScanLine(line) {
+			
 			var BG0Buffer = (this.gfx.displayBG0) ? this.gfx.bg0Renderer.renderScanLine(line) : null;
 			var BG1Buffer = (this.gfx.displayBG1) ? this.gfx.bg1Renderer.renderScanLine(line) : null;
 			var BG2Buffer = (this.gfx.displayBG2) ? this.gfx.bg2TextRenderer.renderScanLine(line) : null;
@@ -26,6 +27,7 @@
 				this.gfx.window0Renderer.renderScanLine(line, this.gfx.lineBuffer, OBJBuffer, BG0Buffer, BG1Buffer, BG2Buffer, BG3Buffer);
 			}
 			this.gfx.copyLineToFrameBuffer(line);
+			
 		}
 		
 		

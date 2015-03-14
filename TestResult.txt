@@ -27,3 +27,10 @@ IOCore.iterate = 100~150
 GRAPHICS
 	addClock
 	1~70
+	
+	graphicsJITVBlank -> 0 ~ 60
+	
+	
+	Modes renderScanlines
+		0 -> 0~2
+		1 -> 

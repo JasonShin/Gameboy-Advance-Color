@@ -49,10 +49,12 @@
 		
 		public function initialize(line) {
 			this.OAMRAM = ArrayHelper.buildArray(0x400);
-			this.OAMRAM16 = ArrayHelper.buildArray(this.OAMRAM);
-			this.readOAM16 = (this.OAMRAM16 != null) ? this.readOAM16Optimized : this.readOAM16Slow;
-			this.OAMRAM32 = ArrayHelper.buildArray(this.OAMRAM);
-			this.readOAM32 = (this.OAMRAM32 != null) ? this.readOAM32Optimized : this.readOAM32Slow;
+			//this.OAMRAM16 = ArrayHelper.buildArray(this.OAMRAM);
+			//this.readOAM16 = (this.OAMRAM16 != null) ? this.readOAM16Optimized : this.readOAM16Slow;
+			this.readOAM16 = this.readOAM16Slow;
+			//this.OAMRAM32 = ArrayHelper.buildArray(this.OAMRAM);
+			//this.readOAM32 = (this.OAMRAM32 != null) ? this.readOAM32Optimized : this.readOAM32Slow;
+			this.readOAM32 = this.readOAM32Slow;
 			this.scratchBuffer = ArrayHelper.buildArray(240);
 			this.scratchWindowBuffer = ArrayHelper.buildArray(240);
 			this.scratchOBJBuffer = ArrayHelper.buildArray(128);
@@ -375,15 +377,15 @@
 			return this.OAMRAM[address] | (this.OAMRAM[address | 1] << 8);
 		}
 		public function readOAM16Optimized(address) {
-			address = address | 0;
-			return this.OAMRAM16[(address >> 1) & 0x1FF] | 0;
+			//address = address | 0;
+			//return this.OAMRAM16[(address >> 1) & 0x1FF] | 0;
 		}
 		public function readOAM32Slow(address) {
 			return this.OAMRAM[address] | (this.OAMRAM[address | 1] << 8) | (this.OAMRAM[address | 2] << 16)  | (this.OAMRAM[address | 3] << 24);
 		}
 		public function readOAM32Optimized(address) {
-			address = address | 0;
-			return this.OAMRAM32[(address >> 2) & 0xFF] | 0;
+			//address = address | 0;
+			//return this.OAMRAM32[(address >> 2) & 0xFF] | 0;
 		}
 		
 		

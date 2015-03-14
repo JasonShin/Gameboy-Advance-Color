@@ -22,35 +22,47 @@
 		}
 		
 		public function keyPress(keyPressed) {
-			switch (keyPressed.toUpperCase()) {
-				case "A":
+			//switch (keyPressed.toUpperCase()) {
+				trace("currentkey: " + keyPressed);
+			switch(keyPressed){
+				//case "A":
+				case 90:	//z
 					this.keyInput &= ~0x1;
 					break;
-				case "B":
+				//case "B":
+				case 66:	//x
 					this.keyInput &= ~0x2;
 					break;
-				case "SELECT":
+				//case "SELECT":
+				case 67:	//c
 					this.keyInput &= ~0x4;
 					break;
-				case "START":
+				//case "START":
+				case 86:	//v
 					this.keyInput &= ~0x8;
 					break;
-				case "RIGHT":
+				//case "RIGHT":
+				case 39:
 					this.keyInput &= ~0x10;
 					break;
-				case "LEFT":
+				//case "LEFT":
+				case 37:
 					this.keyInput &= ~0x20;
 					break;
-				case "UP":
+				//case "UP":
+				case 38:
 					this.keyInput &= ~0x40;
 					break;
-				case "DOWN":
+				//case "DOWN":
+				case 40:
 					this.keyInput &= ~0x80;
 					break;
-				case "R":
+				//case "R":
+				case 65:	//a
 					this.keyInput &= ~0x100;
 					break;
-				case "L":
+				//case "L":
+				case 83:	//s
 					this.keyInput &= ~0x200;
 					break;
 				default:
@@ -62,35 +74,35 @@
 			this.IOCore.deflagStepper(0x4);
 		}
 		public function keyRelease(keyReleased) {
-			switch (keyReleased.toUpperCase()) {
-				case "A":
+			switch (keyReleased) {
+				case 90:
 					this.keyInput |= 0x1;
 					break;
-				case "B":
+				case 66:
 					this.keyInput |= 0x2;
 					break;
-				case "SELECT":
+				case 67:
 					this.keyInput |= 0x4;
 					break;
-				case "START":
+				case 86:
 					this.keyInput |= 0x8;
 					break;
-				case "RIGHT":
+				case 39:
 					this.keyInput |= 0x10;
 					break;
-				case "LEFT":
+				case 37:
 					this.keyInput |= 0x20;
 					break;
-				case "UP":
+				case 38:
 					this.keyInput |= 0x40;
 					break;
-				case "DOWN":
+				case 40:
 					this.keyInput |= 0x80;
 					break;
-				case "R":
+				case 65:
 					this.keyInput |= 0x100;
 					break;
-				case "L":
+				case 83:
 					this.keyInput |= 0x200;
 					break;
 				default:

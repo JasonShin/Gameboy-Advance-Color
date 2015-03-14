@@ -85,12 +85,14 @@
 		
 		public function runIterator() {
 			//Clock through the state machine:
-			
-			while ((this.cyclesToIterate | 0) > 0) {
+			//trace("cycles tyo iterate: " + this.cyclesToIterate / 3 );
+			var st = (new Date()).milliseconds;
+			while ((this.cyclesToIterate / 3 | 0) > 0) {
 				//Handle the current system state selected:
 				this.stepHandle();
 			}
-			
+			var ed = (new Date()).milliseconds;
+			trace("take took: " + (ed - st));
 		}
 		
 		
@@ -148,8 +150,6 @@
 		}
 		public function handleCPU() {
 			//Execute next instruction:
-			
-			
 			if (!this.executeDynarec) {
 				//Interpreter:
 				this.cpu.executeIteration();
@@ -162,7 +162,6 @@
 			
 		}
 		public function handleDMA() {
-			
 			
 			if (this.dma.perform()) {
 				//If DMA is done, exit it:

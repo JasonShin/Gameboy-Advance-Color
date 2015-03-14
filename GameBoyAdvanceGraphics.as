@@ -242,12 +242,9 @@
 		public function clockLCDState() {
 			if ((this.LCDTicks | 0) >= 1006) {
 				//HBlank Event Occurred:
-				var st = (new Date()).milliseconds;
+				
 				this.updateHBlank();
-				var ed = (new Date()).milliseconds;
-				if((ed - st) > 0){
-					trace("Duration went over 0 " + (ed - st));
-				}
+				
 				if ((this.LCDTicks | 0) >= 1232) {
 					/*We've now overflowed the LCD scan line state machine counter,
 					 which tells us we need to be on a new scan-line and refresh over.*/
@@ -358,6 +355,8 @@
 			}
 		}
 		public function updateVBlankStart() {
+			
+			
 			this.inVBlank = true;								//Mark VBlank.
 			if (this.IRQVBlank) {								//Check for VBlank IRQ.
 				this.IOCore.irq.requestIRQ(0x1);
@@ -365,13 +364,18 @@
 			//Ensure JIT framing alignment:
 			if (this.totalLinesPassed < 160) {
 				//Make sure our gfx are up-to-date:
+				
 				this.graphicsJITVBlank();
+				
 				//Draw the frame:
+				
 				this.emulatorCore.prepareFrame();
+				
 			}
 			this.bgAffineRenderer[0].resetReferenceCounters();
 			this.bgAffineRenderer[1].resetReferenceCounters();
 			this.IOCore.dma.gfxVBlankRequest();
+			
 		}
 		public function graphicsJIT() {
 			this.totalLinesPassed = 0;			//Mark frame for ensuring a JIT pass for the next framebuffer output.
@@ -384,16 +388,23 @@
 		}
 		public function graphicsJITScanlineGroup() {
 			//Normal rendering JIT, where we try to do groups of scanlines at once:
+			
+			
 			while (this.queuedScanLines > 0) {
 				this.renderer.renderScanLine(this.lastUnrenderedLine);
 				if (this.lastUnrenderedLine < 159) {
-					++this.lastUnrenderedLine;
+					this.lastUnrenderedLine++;
 				}
 				else {
 					this.lastUnrenderedLine = 0;
 				}
-				--this.queuedScanLines;
+				this.queuedScanLines--;
 			}
+			/*var st = (new Date()).milliseconds;
+			var ed = (new Date()).milliseconds;
+			if((ed - st) > 0){
+				trace("Duration went over 0 " + (ed - st) + "  queued: " + this.queuedScanLines);
+			}*/
 		}
 		public function incrementScanLineQueue() {
 			if (this.queuedScanLines < 160) {

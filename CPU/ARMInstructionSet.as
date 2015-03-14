@@ -1708,32 +1708,32 @@
 			var offset = ((operand & 0xF00) >> 4) | (operand & 0xF);
 			return parentObj.updateBasePostIncrement(operand | 0, offset | 0, userMode) | 0;
 		}
-		public function ofrm(parentObj, operand) {
+		public function ofrm(parentObj, operand, fake = null) {
 			operand = operand | 0;
 			var offset = parentObj.readRegister(operand & 0xF) | 0;
 			return parentObj.updateNoBaseDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function prrm(parentObj, operand) {
+		public function prrm(parentObj, operand, fake = null) {
 			operand = operand | 0;
 			var offset = parentObj.readRegister(operand & 0xF) | 0;
 			return parentObj.updateBasePreDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function ofim(parentObj, operand) {
+		public function ofim(parentObj, operand, fake = null) {
 			operand = operand | 0;
 			var offset = ((operand & 0xF00) >> 4) | (operand & 0xF);
 			return parentObj.updateNoBaseDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function prim(parentObj, operand) {
+		public function prim(parentObj, operand, fake = null) {
 			operand = operand | 0;
 			var offset = ((operand & 0xF00) >> 4) | (operand & 0xF);
 			return parentObj.updateBasePreDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function ofrp(parentObj, operand) {
+		public function ofrp(parentObj, operand, fake = null) {
 			operand = operand | 0;
 			var offset = parentObj.readRegister(operand & 0xF) | 0;
 			return parentObj.updateNoBaseIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function prrp(parentObj, operand) {
+		public function prrp(parentObj, operand, fake = null) {
 			operand = operand | 0;
 			var offset = parentObj.readRegister(operand & 0xF) | 0;
 			return parentObj.updateBasePreIncrement(operand | 0, offset | 0) | 0;
@@ -1743,157 +1743,157 @@
 			var offset = ((operand & 0xF00) >> 4) | (operand & 0xF);
 			return parentObj.updateNoBaseIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function prip(parentObj, operand) {
+		public function prip(parentObj, operand, fake = null) {
 			operand = operand | 0;
 			var offset = ((operand & 0xF00) >> 4) | (operand & 0xF);
 			return parentObj.updateBasePreIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function sptim(parentObj, operand, userMode) {
+		public function sptim(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = operand & 0xFFF;
 			return parentObj.updateBasePostDecrement(operand | 0, offset | 0, userMode | 0);
 		}
-		public function sptip(parentObj, operand, userMode) {
+		public function sptip(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = operand & 0xFFF;
 			return parentObj.updateBasePostIncrement(operand | 0, offset | 0, userMode) | 0;
 		}
-		public function sofim(parentObj, operand, userMode) {
+		public function sofim(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = operand & 0xFFF;
 			return parentObj.updateNoBaseDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function sprim(parentObj, operand, userMode) {
+		public function sprim(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = operand & 0xFFF;
 			return parentObj.updateBasePreDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function sofip(parentObj, operand, userMode) {
+		public function sofip(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = operand & 0xFFF;
 			return parentObj.updateNoBaseIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function sprip(parentObj, operand, userMode) {
+		public function sprip(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = operand & 0xFFF;
 			return parentObj.updateBasePreIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function ptrmll(parentObj, operand, userMode) {
+		public function ptrmll(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lli2(operand | 0) | 0;
 			return parentObj.updateBasePostDecrement(operand | 0, offset | 0, userMode) | 0;
 		}
-		public function ptrmlr(parentObj, operand, userMode) {
+		public function ptrmlr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lri2(operand | 0) | 0;
 			return parentObj.updateBasePostDecrement(operand | 0, offset | 0, userMode) | 0;
 		}
-		public function ptrmar(parentObj, operand, userMode) {
+		public function ptrmar(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.ari2(operand | 0) | 0;
 			return parentObj.updateBasePostDecrement(operand | 0, offset | 0, userMode) | 0;
 		}
-		public function ptrmrr(parentObj, operand, userMode) {
+		public function ptrmrr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.rri2(operand | 0) | 0;
 			return parentObj.updateBasePostDecrement(operand | 0, offset | 0, userMode) | 0;
 		}
-		public function ptrpll(parentObj, operand, userMode) {
+		public function ptrpll(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lli2(operand | 0) | 0;
 			return parentObj.updateBasePostIncrement(operand | 0, offset | 0, userMode) | 0;
 		}
-		public function ptrplr(parentObj, operand, userMode) {
+		public function ptrplr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lri2(operand | 0) | 0;
 			return parentObj.updateBasePostIncrement(operand | 0, offset | 0, userMode) | 0;
 		}
-		public function ptrpar(parentObj, operand, userMode) {
+		public function ptrpar(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.ari2(operand | 0) | 0;
 			return parentObj.updateBasePostIncrement(operand | 0, offset | 0, userMode) | 0;
 		}
-		public function ptrprr(parentObj, operand, userMode) {
+		public function ptrprr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.rri2(operand | 0) | 0;
 			return parentObj.updateBasePostIncrement(operand | 0, offset | 0, userMode) | 0;
 		}
-		public function ofrmll(parentObj, operand, userMode) {
+		public function ofrmll(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lli2(operand | 0) | 0;
 			return parentObj.updateNoBaseDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function ofrmlr(parentObj, operand, userMode) {
+		public function ofrmlr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lri2(operand | 0) | 0;
 			return parentObj.updateNoBaseDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function ofrmar(parentObj, operand, userMode) {
+		public function ofrmar(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.ari2(operand | 0) | 0;
 			return parentObj.updateNoBaseDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function ofrmrr(parentObj, operand, userMode) {
+		public function ofrmrr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.rri2(operand | 0) | 0;
 			return parentObj.updateNoBaseDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function prrmll(parentObj, operand, userMode) {
+		public function prrmll(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lli2(operand | 0) | 0;
 			return parentObj.updateBasePreDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function prrmlr(parentObj, operand, userMode) {
+		public function prrmlr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lri2(operand | 0) | 0;
 			return parentObj.updateBasePreDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function prrmar(parentObj, operand, userMode) {
+		public function prrmar(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.ari2(operand | 0) | 0;
 			return parentObj.updateBasePreDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function prrmrr(parentObj, operand, userMode) {
+		public function prrmrr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.rri2(operand | 0) | 0;
 			return parentObj.updateBasePreDecrement(operand | 0, offset | 0) | 0;
 		}
-		public function ofrpll(parentObj, operand, userMode) {
+		public function ofrpll(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lli2(operand | 0) | 0;
 			return parentObj.updateNoBaseIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function ofrplr(parentObj, operand, userMode) {
+		public function ofrplr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lri2(operand | 0) | 0;
 			return parentObj.updateNoBaseIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function ofrpar(parentObj, operand, userMode) {
+		public function ofrpar(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.ari2(operand | 0) | 0;
 			return parentObj.updateNoBaseIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function ofrprr(parentObj, operand, userMode) {
+		public function ofrprr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.rri2(operand | 0) | 0;
 			return parentObj.updateNoBaseIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function prrpll(parentObj, operand, userMode) {
+		public function prrpll(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lli2(operand | 0) | 0;
 			return parentObj.updateBasePreIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function prrplr(parentObj, operand, userMode) {
+		public function prrplr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.lri2(operand | 0) | 0;
 			return parentObj.updateBasePreIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function prrpar(parentObj, operand, userMode) {
+		public function prrpar(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.ari2(operand | 0) | 0;
 			return parentObj.updateBasePreIncrement(operand | 0, offset | 0) | 0;
 		}
-		public function prrprr(parentObj, operand, userMode) {
+		public function prrprr(parentObj, operand, userMode = null) {
 			operand = operand | 0;
 			var offset = parentObj.rri2(operand | 0) | 0;
 			return parentObj.updateBasePreIncrement(operand | 0, offset | 0) | 0;

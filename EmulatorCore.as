@@ -7,6 +7,8 @@
 	import flash.utils.ByteArray;
 	import flash.geom.Rectangle;
 	import flash.display.MovieClip;
+	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	
 	public class EmulatorCore extends MovieClip{
 			
@@ -108,7 +110,7 @@
 		public function romLoadComplete(dat:ByteArray){
 			attachCanvas();
 			attachROM(dat);
-			startTimer();
+			playEmulator();
 		}
 		
 		public function playEmulator():void {
@@ -150,15 +152,29 @@
 			
 		}
 		public function startTimer():void {
+			//timerIntervalRate
+			mainTimer = new Timer(1);
 			this.clearTimer();
 			var parentObj = this;
-
-			mainTimer = new Timer(this.timerIntervalRate);
+			//trace("interval: " + (this.timerIntervalRate));
 			mainTimer.start();
+			//this.addEventListener(Event.ENTER_FRAME, this.timerCallback);
 			mainTimer.addEventListener(TimerEvent.TIMER, this.timerCallback);
+			initKeyEvents(this);
 		}
-		public function timerCallback(event:TimerEvent):void {
+		
+		public function initKeyEvents(po){
+			var parentObj = po;
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, function(keyEvent:KeyboardEvent){parentObj.curKeyDown(keyEvent.keyCode)});
+			stage.addEventListener(KeyboardEvent.KEY_UP, function(keyEvent:KeyboardEvent){parentObj.curKeyUp(keyEvent.keyCode)});
+		}
+		
+		//event:TimerEvent
+		public function timerCallback(e:TimerEvent):void {
+			//trace("Percent: " + this.getSpeedPercentage() );
+		
 			//Check to see if web view is not hidden, if hidden don't run due to JS timers being inaccurate on page hide:
+			//trace("emulator speed: " + this.emulatorSpeed  +  "   clock/sec: " + this.clocksPerSecond);
 			if (!this.faultFound && this.romFound) {						//Any error pending or no ROM loaded is a show-stopper!
 				
 				this.iterationStartSequence();								//Run start of iteration stuff.
@@ -173,6 +189,7 @@
 			else {
 				this.pauseEmulator();												//Some pending error is preventing execution, so pause.
 			}
+			
 		}
 		
 		public function iterationStartSequence():void {
@@ -207,6 +224,7 @@
 		}
 		public function changeCoreTimer(newTimerIntervalRate):void {
 			this.timerIntervalRate = Math.max(parseInt(newTimerIntervalRate), 1);
+			
 			if (!this.paused) {						//Set up the timer again if running.
 				this.clearTimer();
 				this.startTimer();
@@ -215,27 +233,29 @@
 			this.reinitializeAudio();
 		}
 		public function resetMetrics():void {
+			
 			this.clockCyclesSinceStart = 0;
 			this.metricStart = new Date();
 		}
 		public function calculateTimings():void {
-			this.clocksPerSecond = this.emulatorSpeed * 0x1000000;
+			this.clocksPerSecond = this.emulatorSpeed * 0x1000000 / 2;
 			this.CPUCyclesTotal = this.CPUCyclesPerIteration = Math.min(this.clocksPerSecond / 1000 * this.timerIntervalRate, 0x7FFFFFFF) | 0;
+			//trace("Total: " + this.CPUCyclesTotal);
 		}
 		public function getSpeedPercentage():String {
-			var metricEnd = new Date();
-			return (((this.timerIntervalRate * this.clockCyclesSinceStart / (metricEnd.getTime() - this.metricStart.getTime())) / this.CPUCyclesPerIteration) * 100) + "%";
+			var metricEnd:Date = new Date();
+			return (((this.timerIntervalRate * this.clockCyclesSinceStart / (metricEnd.time - this.metricStart.time)) / this.CPUCyclesPerIteration) * 100) + "%";
 		}
 		public function initializeCore():void {
 			//Setup a new instance of the i/o core:
 			this.IOCore = new GameBoyAdvanceIO(this);
 		}
-		public function keyDown(keyPressed):void {
+		public function curKeyDown(keyPressed):void {
 			if (!this.paused) {
 				this.IOCore.joypad.keyPress(keyPressed);
 			}
 		}
-		public function keyUp(keyReleased):void {
+		public function curKeyUp(keyReleased):void {
 			if (!this.paused) {
 				this.IOCore.joypad.keyRelease(keyReleased);
 			}
@@ -295,6 +315,7 @@
 		}
 		public function swizzleFrameBuffer():void {
 			//Convert our dirty 15-bit (15-bit, with internal render flags above it) framebuffer to an 8-bit buffer with separate indices for the RGB channels:
+			//trace("swizzling buffer");
 			var bufferIndex = 0;
 			for (var canvasIndex = 0; canvasIndex < this.offscreenRGBCount;) {
 				this.swizzledFrame[canvasIndex++] = (this.frameBuffer[bufferIndex] & 0x1F) << 3;			//Red
@@ -314,7 +335,7 @@
 		public var undef = 0;
 		
 		public function requestDraw():void {
-		
+		//this.drewFrame
 			if(this.drewFrame){
 				var bufferIndex = 0;
 				for (var canvasIndex = 0; canvasIndex < this.offscreenRGBACount;) {
@@ -418,10 +439,11 @@
 			if (this.romFound && this.paused) {
 				this.initializeCore();
 			}
+			
 		}
 		public function toggleDynarec(dynarecEnabled):void {
 			//Keep disabled by force until we rewrite the jit:
-			//this.dynarecEnabled = !!dynarecEnabled;
+			this.dynarecEnabled = !!dynarecEnabled;
 		}
 
 

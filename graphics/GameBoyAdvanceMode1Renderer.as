@@ -24,6 +24,7 @@
 				this.gfx.window0Renderer.renderScanLine(line, this.gfx.lineBuffer, OBJBuffer, BG0Buffer, BG1Buffer, BG2Buffer, null);
 			}
 			this.gfx.copyLineToFrameBuffer(line);
+			
 		}
 				
 		
